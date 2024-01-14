@@ -1,8 +1,9 @@
-import { InteractionResponseType, Client, GatewayIntentBits } from "discord.js";
+import { InteractionResponseType, Client, GatewayIntentBits, ClientOptions } from "discord.js";
 import { Response } from "express";
 
 export const wake = async (res: Response) => {
     const client = new Client({ intents: [16777216] });
+    client.login(process.env.DISCORD_TOKEN!)
 
     let guild = await client.fetchGuildPreview(res.req.body.guild_id)
 
