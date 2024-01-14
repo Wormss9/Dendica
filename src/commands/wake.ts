@@ -4,14 +4,13 @@ import { Response } from "express";
 export const wake = async (res: Response) => {
     const client = new Client({ intents: [16777216] });
 
-    let x = await client.fetchGuildPreview
+    console.log(res.req.body.data)
 
-    console.log("x")
-    console.log(x)
+    // let x = await client.fetchGuildPreview()
+
 
     let member = res.req.body.data.resolved.members
-    console.log(member)
-    let id = Object.keys(member)
+    let id = Object.keys(member)[0]
     console.log(id)
 
     return res.send({
