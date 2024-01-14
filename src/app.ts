@@ -1,32 +1,48 @@
 import 'dotenv/config';
-import express from 'express';
-import {
-  InteractionType,
-  InteractionResponseType,
-} from 'discord.js';
-import { VerifyDiscordRequest } from './utils.js';
-import {wake} from './commands/wake.js'
+import commands from './commands/index.js';
+import { Collection, Client, Events, GatewayIntentBits, PermissionsBitField } from 'discord.js';
+import { register } from './register.js';
 
-const app = express();
-const PORT = process.env.PORT || 2024;
-app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY!) }));
+interface ClientWithCommands extends Client {
+  commands: Collection<string, any>
+}
 
-app.post('/interactions', async function (req, res) {
-  const { type, id, data } = req.body;
+let command_list = [];
+const client = new Client({ intents: [GatewayIntentBits.Guilds] }) as ClientWithCommands;
 
-  if (type === InteractionType.Ping) {
-    return res.send({ type: InteractionResponseType.Pong });
+client.once(Events.ClientReady, readyClient => {
+  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+});
+
+client.commands = new Collection();
+
+for (const command of commands) {
+  client.commands.set(command.data.name, command);
+  command_list.push(command.data.toJSON())
+}
+
+client.login(process.env.DISCORD_TOKEN!);
+
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isChatInputCommand()) return;
+  console.log(interaction);
+  const command = (interaction.client as ClientWithCommands).commands.get(interaction.commandName);
+
+  if (!command) {
+    console.error(`No command matching ${interaction.commandName} was found.`);
+    return;
   }
 
-  if (type === InteractionType.ApplicationCommand) {
-    switch (data.name) {
-      case 'wake':
-        await wake(res)
-        break;
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    console.error(error);
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+    } else {
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
   }
 });
 
-app.listen(PORT, () => {
-  console.log('Listening on port', PORT);
-});
+register(command_list)

@@ -1,23 +1,16 @@
-import { InteractionResponseType, Client, GatewayIntentBits, ClientOptions } from "discord.js";
-import { Response } from "express";
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-export const wake = async (res: Response) => {
-    const client = new Client({ intents: [16777216] });
-    client.login(process.env.DISCORD_TOKEN!)
-
-    let guild = await client.fetchGuildPreview(res.req.body.guild_id)
-
-    console.log(guild)
-
-
-    let member = res.req.body.data.resolved.members
-    let id = Object.keys(member)[0]
-    console.log(id)
-
-    return res.send({
-        type: InteractionResponseType.ChannelMessageWithSource,
-        data: {
-            content: 'hello world ',
-        },
-    });
-}
+export default {
+    data: new SlashCommandBuilder()
+        .setName('wake')
+        .setDescription('Wakes up user.')
+        .addUserOption(option =>
+            option
+                .setName('target')
+                .setDescription('The member to wake up')
+                .setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.MoveMembers),
+    async execute(interaction: any) {
+        await interaction.reply('hello world');
+    },
+};
