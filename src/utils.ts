@@ -5,9 +5,7 @@ import { Request, Response } from 'express';
 import type { Command } from './commands.d.ts'
 
 export function VerifyDiscordRequest(clientKey: string) {
-  return function (req: Request, res: Response, buf: Buffer, encoding: any) {
-    console.log("encoding")
-    console.log(encoding)
+  return function (req: Request, res: Response, buf: Buffer, encoding: string) {
     const signature = req.get('X-Signature-Ed25519');
     const timestamp = req.get('X-Signature-Timestamp');
 

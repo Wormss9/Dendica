@@ -4,9 +4,10 @@ import { Response } from "express";
 export const wake = async (res: Response) => {
     console.log("body")
     console.log(res.req.body)
-    console.log("cache")
-    console.log(res.req.body.guild.channels.cache)
-    console.log("channels")
+    console.log("data")
+    console.log(res.req.body.data)
+    console.log("resolved")
+    console.log(res.req.body.data.resolved)
     let channels = await res.req.body.guild.channels.fetch()
     console.log(channels)
     return res.send({
