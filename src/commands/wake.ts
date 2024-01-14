@@ -4,7 +4,7 @@ import { Response } from "express";
 export const wake = async (res: Response) => {
     const client = new Client({ intents: [16777216] });
 
-    console.log(res.req.body.data)
+    console.log(res.req.body)
 
     // let x = await client.fetchGuildPreview()
 
