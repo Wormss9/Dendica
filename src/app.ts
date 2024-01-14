@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import commands from './commands/index.js';
-import { Collection, Client, Events, GatewayIntentBits, PermissionsBitField } from 'discord.js';
+import { Collection, Client, Events, GatewayIntentBits } from 'discord.js';
 import { register } from './register.js';
 
 interface ClientWithCommands extends Client {
@@ -25,7 +25,6 @@ client.login(process.env.DISCORD_TOKEN!);
 
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
-  console.log(interaction);
   const command = (interaction.client as ClientWithCommands).commands.get(interaction.commandName);
 
   if (!command) {
