@@ -1,17 +1,21 @@
-import { InteractionResponseType } from "discord-interactions";
+import { InteractionResponseType, Client, GatewayIntentBits } from "discord.js";
 import { Response } from "express";
 
 export const wake = async (res: Response) => {
-    console.log("body")
-    console.log(res.req.body)
-    console.log("data")
-    console.log(res.req.body.data)
-    console.log("resolved")
-    console.log(res.req.body.data.resolved)
-    let channels = await res.req.body.guild.channels.fetch()
-    console.log(channels)
+    const client = new Client({ intents: [16777216] });
+
+    let x = await client.fetchGuildPreview
+
+    console.log("x")
+    console.log(x)
+
+    let member = res.req.body.data.resolved.members
+    console.log(member)
+    let id = Object.keys(member)
+    console.log(id)
+
     return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        type: InteractionResponseType.ChannelMessageWithSource,
         data: {
             content: 'hello world ',
         },
