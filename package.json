@@ -1,0 +1,29 @@
+{
+  "name": "dendica",
+  "version": "1.0.0",
+  "description": "Discord wake up app",
+  "type": "module",
+  "main": "./build/app.js",
+  "engines": {
+    "node": "21.x"
+  },
+  "scripts": {
+    "start": "node ./build/app.js",
+    "register": "node ./build/commands.js",
+    "build": "tsc"
+  },
+  "author": "Wormss9",
+  "dependencies": {
+    "discord-interactions": "^3.2.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.0",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

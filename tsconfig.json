@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "target": "ES2016",
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "outDir": "build",
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": [
+    "./src",
+  ]
+}
