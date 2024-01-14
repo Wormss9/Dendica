@@ -21,7 +21,7 @@ app.post('/interactions', async function (req, res) {
   if (type === InteractionType.APPLICATION_COMMAND) {
     switch (data.name) {
       case 'wake':
-        wake(res)
+        await wake(res)
         break;
     }
   }
