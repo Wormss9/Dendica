@@ -1,7 +1,8 @@
 import { REST, Routes } from "discord.js";
+import { APP_ID, DISCORD_TOKEN } from "./env.js";
 
 export const register = (command_list: any) => {
-    const rest = new REST().setToken(process.env.DISCORD_TOKEN!);
+    const rest = new REST().setToken(DISCORD_TOKEN);
 
     (async () => {
         try {
@@ -9,7 +10,7 @@ export const register = (command_list: any) => {
 
             // The put method is used to fully refresh all commands in the guild with the current set
             const data: any = await rest.put(
-                Routes.applicationCommands(process.env.APP_ID!),
+                Routes.applicationCommands(APP_ID),
                 { body: command_list },
             );
 

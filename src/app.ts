@@ -1,7 +1,7 @@
-import 'dotenv/config';
 import commands from './commands/index.js';
 import { Collection, Client, Events, GatewayIntentBits } from 'discord.js';
 import { register } from './register.js';
+import { DISCORD_TOKEN } from './env.js';
 
 interface ClientWithCommands extends Client {
   commands: Collection<string, any>
@@ -21,7 +21,7 @@ for (const command of commands) {
   command_list.push(command.data.toJSON())
 }
 
-client.login(process.env.DISCORD_TOKEN!);
+client.login(DISCORD_TOKEN);
 
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
