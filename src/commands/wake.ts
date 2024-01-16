@@ -23,6 +23,7 @@ export default {
             await interaction.reply(`Nowhere to move`);
             return
         }
+        console.log(member.voice.channel)
         let original_channel = member.voice.channel
         if (!original_channel) {
             await interaction.reply(`${member} is not in the call!`);
