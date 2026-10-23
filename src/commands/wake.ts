@@ -1,4 +1,4 @@
-import { PermissionFlagsBits, SlashCommandBuilder, CommandInteraction, ChannelType, GuildMember, VoiceBasedChannel } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder, ChatInputCommandInteraction, ChannelType, GuildMember, VoiceChannel } from 'discord.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -6,44 +6,37 @@ export default {
         .setDescription('Wakes up user.')
         .addUserOption(option =>
             option
-                .setName('target')
+                .setName('sleeper')
                 .setDescription('The member to wake up')
                 .setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.MoveMembers),
-    async execute(interaction: CommandInteraction) {
-        let channels = await interaction.guild?.channels.fetch()
-        let member = interaction.options.getMember('target') as GuildMember
-        let voice_channels = channels?.filter((channel) =>
-            channel?.type === ChannelType.GuildVoice
-        ).filter((channel) =>
-            channel?.permissionsFor(member).has(PermissionFlagsBits.Connect)
-        ).map((channel) => channel as VoiceBasedChannel)
-        let channels_array = [...voice_channels!]
-        if ((channels_array.length - 1) < 2) {
-            await interaction.reply(`Nowhere to move`);
-            return
-        }
-        console.log(member.voice.channel)
-        let original_channel = member.voice.channel
-        if (!original_channel) {
-            await interaction.reply(`${member} is not in the call!`);
-            return
-        }
-        let current_channel = original_channel;
+    async execute(interaction: ChatInputCommandInteraction) {
+        await interaction.deferReply();
+        const member = interaction.options.getMember('target') as GuildMember
+        const original_channel = member.voice.channel as VoiceChannel
 
+        if (!original_channel) {
+            await interaction.editReply(`${member} is not in the call!`);
+            return
+        }
+
+        const channels = await interaction.guild?.channels.fetch()
+        const availible_channels = channels?.filter((channel) =>
+            channel?.type === ChannelType.GuildVoice &&
+            channel?.permissionsFor(member).has(PermissionFlagsBits.Connect) &&
+            channel.id !== original_channel.id
+        ).map((channel) => channel as VoiceChannel)
+
+        if (!availible_channels || availible_channels.length < 1) {
+            await interaction.editReply(`Nowhere to move`);
+            return
+        }
 
         for (let i = 0; i < 5; i++) {
-            let random
-            while (true) {
-                random = Math.floor(Math.random() * (channels_array.length - 1))
-                if (channels_array[random] !== current_channel) {
-                    break
-                }
-            }
-            current_channel = channels_array[random]
-            member.voice.setChannel(current_channel)
-            member.voice.setChannel(original_channel)
+            let random = Math.floor(Math.random() * availible_channels.length)
+            await member.voice.setChannel(availible_channels[random]!)
+            await member.voice.setChannel(original_channel)
         }
-        await interaction.reply(`${member} has been awoken!`);
+        await interaction.editReply(`${member} has been awoken!`);
     },
 };
