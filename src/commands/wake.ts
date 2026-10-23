@@ -12,7 +12,7 @@ export default {
         .setDefaultMemberPermissions(PermissionFlagsBits.MoveMembers),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
-        const member = interaction.options.getMember('target') as GuildMember
+        const member = interaction.options.getMember('sleeper') as GuildMember
         const original_channel = member.voice.channel as VoiceChannel
 
         if (!original_channel) {
