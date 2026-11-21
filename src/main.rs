@@ -64,18 +64,26 @@ impl EventHandler for Handler {
     }
 
     async fn ready(&self, ctx: Context, ready: Ready) {
-        println!("{}#{} is connected!", ready.user.name, ready.user.id);
-
+        match ready.user.discriminator {
+            Some(discriminator) => {
+                println!("{}#{} is connected!", ready.user.name, discriminator);
+            }
+            None => {
+                println!("{} is connected!", ready.user.name);
+            }
+        }
         let global_commands: Result<Vec<Command>, SerenityError> =
             Command::set_global_commands(&ctx.http, vec![commands::wake::register()]).await;
 
         match global_commands {
             Ok(commands) => {
-                println!("Successfully registered {} commands:", commands.len());
+                print!("Successfully registered {} commands:", commands.len());
 
                 for command in commands {
                     print!(" {}", command.name);
                 }
+
+                println!();
             }
             Err(error) => eprintln!("Command registering error: {error:?}"),
         }
