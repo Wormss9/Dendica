@@ -1,0 +1,10 @@
+[package]
+name = "dendica"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+dotenvy = "0.15.7"
+rand = "0.10.4"
+serenity = "0.12.5"
+tokio = { version = "*", features = ["macros", "rt-multi-thread"] }
